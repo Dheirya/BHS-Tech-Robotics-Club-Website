@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block head %}
-    <title>Index</title>
+    <title>Bernards High School Tech & Robotics Club</title>
     <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
-    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
     <style>
         .main-carousel {
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -15,6 +15,7 @@
             margin: 0 auto;
             padding-top: 100%;
             position: relative;
+            border-radius: 10px;
         }
         .carousel-cell img {
             position: absolute;
@@ -23,20 +24,90 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            cursor: default;
+        }
+        .titleCaption:hover {
+            filter: brightness(0.85);
+        }
+        .titleCaption {
+            cursor: pointer;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        #photos, #social {
+            flex: 3;
+            padding: 10px 20px;
+            background-color: #ebe9e8;
+            border-radius: 10px;
+            color: #1e1e1e;
+            min-width: 200px;
+        }
+        #social {
+            flex: 1 !important;
+        }
+        #gallery {
+            margin-top: -20px !important;
         }
     </style>
 {% endblock %}
 {% block side %}
-    <h1>Projects!</h1>
+    <h1>Projects</h1>
     <div class="main-carousel" data-flickity='{"cellAlign": "left", "contain": true}'>
         {% for project in projects %}
             <div class="carousel-cell">
                 <img src="{{ project.random_image.image.url }}" alt="{{ project.title }}">
+                <h1 class="titleCaption" onclick="window.location.href = '/project/{{ project.title }}'">{{ project.title }}</h1>
             </div>
         {% endfor %}
     </div>
 {% endblock %}
 {% block content %}
     <h1>Welcome</h1>
-    <p>Welcome to the TechApp index page!</p>
+    <p>The Bernards High School Tech & Robotics Club is a student-led organization dedicated to exploring <b>innovation</b> and connecting the <b>community</b> through hands-on technology and engineering projects. We work to bring fun and crazy ideas to life!</p>
+    <p>This club is open to <b>all students</b>, especially beginners who are interested in engineering. We host regular workshops/events to teach coding, electronics, and engineering basics. <b>No matter your experience</b>, there is a place here for you!</p>
+    <p>We also participate in regional STEM competitions every month, which are a great opportunity to think creatively and work collaboratively on <b>real-world problems</b>. Every year, in February, we also host our own STEM competition.</p>
+    <i>This club is currently being given resources under the <a href="https://hackclub.com" target="_blank">Hack Club</a> program. If you wish to become a <b>sponsor</b>, please fill out this <a href="https://forms.google.com" target="_blank">form</a>.</i>
+{% endblock %}
+{% block bottom %}
+    <section id="photos">
+        <h1>Photos</h1>
+        <div id="gallery"></div>
+    </section>
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/jquery.nanogallery2.min.js"></script>
+    <script>
+        $('#gallery').nanogallery2({
+            items: [
+                {% for image in all_images %}
+                    {src: '{{ image.image.url }}', title: encodeURIComponent('{{ image.get_first_project_url }}')},
+                {% endfor %}
+            ],
+            galleryDisplayMode: 'pagination',
+            thumbnailHeight: '275',
+            thumbnailWidth: 'auto',
+            thumbnailAlignment: 'fillWidth',
+            thumbnailDisplayTransition: 'scaleUp',
+            thumbnailHoverEffect2: 'image_scale_1.00_1.15_500_bounce|image_rotateZ_0deg_05deg',
+            touchAnimation: true,
+            touchAutoOpenDelay: 500,
+            thumbnailDisplayTransitionDuration: 400,
+            thumbnailDisplayInterval: 200,
+            thumbnailDisplayOrder: 'rowByRow',
+            thumbnailLabel: {display: false},
+            thumbnailLazyLoad: true,
+            galleryMaxRows: 2,
+            paginationVisiblePages: 5,
+            locationHash: false,
+            fnThumbnailOpen: function(items) {
+                window.location.href = (decodeURIComponent(items[0].title));
+            },
+        });
+    </script>
 {% endblock %}

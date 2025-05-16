@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
     <style>
         body {
             background-color: #3d0000;
@@ -29,7 +28,7 @@
             display: inline;
             font-size: 20px;
         }
-        nav a {
+        nav ul a {
             text-decoration: none;
             color: #ebe9e8;
             background-color: #8a0000;
@@ -65,6 +64,7 @@
             background-color: #ebe9e8;
             border-radius: 10px;
             color: #1e1e1e;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
         #bottomFlex {
             display: flex;
@@ -72,25 +72,23 @@
             margin: 0 10%;
             gap: 20px;
         }
-        #photos, #social {
-            flex: 3;
-            padding: 10px 20px;
-            background-color: #ebe9e8;
-            border-radius: 10px;
-            color: #1e1e1e;
-            min-width: 200px;
+        .linkH1 {
+            text-decoration: none;
+            color: #ebe9e8;
         }
-        #social {
-            flex: 1 !important;
+        #gallery div {
+            border-radius: 10px;
+        }
+        #photos h2 {
+            margin-bottom: 0px;
         }
     </style>
     {% block head %}{% endblock %}
 </head>
 <body>
     <nav>
-        <h1>Bernards Tech & Robotics Club</h1>
+        <a href="/" class="linkH1"><h1>Bernards Tech & Robotics Club</h1></a>
         <ul>
-            <li><a href="/">Overview</a></li>
             {% for topic in all_topics %}
                 <li><a href="/topic/{{ topic.title }}">{{ topic.title }}</a></li>
             {% endfor %}
@@ -110,54 +108,22 @@
     </div>
     <br/>
     <div id="bottomFlex" class="container">
-        <section id="photos">
-            <h2>Photos</h2>
-            <p>Check out some of our projects/events!</p>
-            <div id="gallery"></div>
-        </section>
+        {% block bottom %}{% endblock %}
         <section id="social">
             <h2>About Us</h2>
             <p>We are a team of motivated high school students attempting to spread STEM education and create a more inclusive tech community!</p>
             <ul>
-                <li><b>President:</b> Jake D'Alonzo & Lucian Spiteri</li>
+                <li><b>President:</b> Lucian Spiteri</li>
                 <li><b>Vice President:</b> Dheirya Tyagi</li>
                 <li><b>Treasurer:</b> ...</li>
                 <li><b>Social Media:</b> ...</li>
             </ul>
-            <p>Follow us on <a href="https://instagram.com/bhstechroboticsclub/" target="_blank"><i>Instagram</i></a> for our latest!</p>
+            <p>Follow us on <a href="https://instagram.com/bhstechroboticsclub/" target="_blank">Instagram</a> for our latest!</p>
+            <h2>Designed By</h2>
+            <p>This site was made by <b>Dheirya Tyagi</b> (2026) and <b>Lucian Spiteri</b> (2026). It is being graciously hosted and funded by Hack Club!</p>
+            <p>The code is on <a href="https://github.com/Dheirya/BHS-Tech-Robotics-Club-Website" target="_blank">GitHub</a></p>
         </section>
     </div>
     <br/>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/jquery.nanogallery2.min.js"></script>
-    <script>
-            $('#gallery').nanogallery2({
-                items: [
-                    {% for image in all_images %}
-                        {src: '{{ image.image.url }}', title: encodeURIComponent('{{ image.get_first_project_url }}')},
-                    {% endfor %}
-                ],
-                galleryDisplayMode: 'pagination',
-                thumbnailHeight: '275',
-                thumbnailWidth: 'auto',
-                thumbnailAlignment: 'fillWidth',
-                thumbnailDisplayTransition: 'scaleUp',
-                thumbnailBuildInit2: '.nGY2GThumbnailAlbumTitle_border-left_5px solid #23CB99|.nGY2GThumbnailAlbumTitle_margin_20px|title_backgroundColor_rgba(200,200,200,0.8)|title_color_#000',
-                thumbnailHoverEffect2: 'image_scale_1.00_1.15_500_bounce|image_rotateZ_0deg_05deg',
-                touchAnimation: true,
-                touchAutoOpenDelay: 500,
-                thumbnailDisplayTransitionDuration: 400,
-                thumbnailDisplayInterval: 200,
-                thumbnailDisplayOrder: 'rowByRow',
-                thumbnailLabel: {display: false},
-                thumbnailLazyLoad: true,
-                galleryMaxRows: 2,
-                paginationVisiblePages: 5,
-                locationHash: false,
-                fnThumbnailOpen: function(items) {
-                    window.location.href = (decodeURIComponent(items[0].title));
-                },
-            });
-    </script>
 </body>
 </html>

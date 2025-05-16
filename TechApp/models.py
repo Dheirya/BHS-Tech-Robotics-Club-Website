@@ -12,6 +12,8 @@ class Image(models.Model):
     def get_first_project_url(self):
         if self.project_set.exists():
             return '/project/' + self.project_set.first().title
+        if self.topic_set.exists():
+            return '/topic/' + self.topic_set.first().title
         return self.image.url
 
 
@@ -27,6 +29,7 @@ class Team(models.Model):
 class Topic(models.Model):
     title = models.CharField(max_length=250, unique=True)
     description = models.TextField()
+    coverImage = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -38,6 +41,7 @@ class Project(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     authors = models.ManyToManyField('auth.User')
     images = models.ManyToManyField(Image, blank=True)
+    link = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.title

@@ -1,18 +1,88 @@
 {% extends "base.html" %}
 {% block head %}
     <title>{{ topic.title }}</title>
+    <style>
+        .projectFlex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .project {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 20px;
+            background-color: #d5d5d5;
+            border-radius: 10px;
+            color: #1e1e1e;
+            cursor: pointer;
+        }
+        .project:hover {
+            filter: brightness(0.85);
+            animation: buzzy 1s ease-out;
+        }
+        @keyframes buzzy {
+            10% {
+                transform: translateX(3px) rotate(2deg);
+            }
+            20% {
+                transform: translateX(-3px) rotate(-2deg);
+            }
+            30% {
+                transform: translateX(3px) rotate(2deg);
+            }
+            40% {
+                transform: translateX(-3px) rotate(-2deg);
+            }
+            50% {
+                transform: translateX(2px) rotate(1deg);
+            }
+            60% {
+                transform: translateX(-2px) rotate(-1deg);
+            }
+            70% {
+                transform: translateX(2px) rotate(1deg);
+            }
+            80% {
+                transform: translateX(-2px) rotate(-1deg);
+            }
+            90% {
+                transform: translateX(1px) rotate(0);
+            }
+            100% {
+                transform: translateX(-1px) rotate(0);
+            }
+        }
+    </style>
 {% endblock %}
 {% block side %}
     <h1>{{ topic.title }}</h1>
+    <img src="{{ topic.coverImage.image.url }}" alt="{{ topic.title }}" style="width: 100%; border-radius: 10px;">
     <p>{{ topic.description }}</p>
 {% endblock %}
 {% block content %}
     <h1>Projects</h1>
-    {% for project in projects %}
-        <div class="project">
-            <h2>{{ project.title }}</h2>
-            <p>{{ project.description }}</p>
-            <a href="{{ project.url }}">View Project</a>
-        </div>
-    {% endfor %}
+    <div class="projectFlex">
+        {% for project in projects %}
+            <div class="project" onclick="window.location.href = '/project/{{ project.title }}'">
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description }}</p>
+            </div>
+        {% empty %}
+            <p style="margin-top: 0px">There are currently no projects under this topic! Stay tuned 👀</p>
+        {% endfor %}
+    </div>
+    <script>
+        let colors = ['#ef9da1', '#f3ecdc', '#9c8bc2', '#c895be', '#8dd3f4', '#8fafd8', '#d6e2a2', '#93cb9c', '#f9cc8d', '#fef59a', '#f29d80', '#f3b386'];
+        const projects = document.querySelectorAll('.project');
+        projects.forEach((project) => {
+            let pickedColor = colors[Math.floor(Math.random() * colors.length)];
+            colors.splice(colors.indexOf(pickedColor), 1);
+            project.style.backgroundColor = pickedColor;
+            if (colors.length === 0) {
+                colors = ['#ef9da1', '#f3ecdc', '#9c8bc2', '#c895be', '#8dd3f4', '#8fafd8', '#d6e2a2', '#93cb9c', '#f9cc8d', '#fef59a', '#f29d80', '#f3b386'];
+            }
+        });
+    </script>
 {% endblock %}
