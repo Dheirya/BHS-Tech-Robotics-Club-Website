@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-3ccua-qc7htmw)p)-rlk498j^-a755urn203*7#^c9h!0w4o-t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'TechApp'
+    'TechApp',
+    'django_recaptcha'
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -128,3 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+RECAPTCHA_PUBLIC_KEY = '6Le4Nj4rAAAAAFkRMTJG8KpQKHCu5O-2uYPH6cog'
+RECAPTCHA_PRIVATE_KEY = '6Le4Nj4rAAAAAFkRMTJG8KpQKHCu5O-2uYPH6cog'

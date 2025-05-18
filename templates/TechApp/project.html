@@ -20,6 +20,99 @@
         .description {
             margin-bottom: 30px;
         }
+        #social {
+            display: none;
+        }
+        #side {
+            flex: 1 !important;
+        }
+        #main {
+            flex: 1 !important;
+        }
+        #updates, #comments {
+            padding: 10px 20px;
+            background-color: #ebe9e8;
+            border-radius: 10px;
+            color: #1e1e1e;
+            min-width: 200px;
+            flex: 1 !important;
+        }
+        #comments {
+            flex: 3 !important;
+        }
+        .timeline {
+            list-style: none;
+            margin: 0;
+            border-left: 2px solid #ccc;
+            padding-left: 0;
+        }
+        .timeline li {
+            position: relative;
+            margin-bottom: 50px;
+            border-left: 2px solid #666;
+            padding-left: 10px;
+            margin-left: -1px;
+        }
+        .timeline li i {
+            color: #555;
+            display: block;
+            text-align: right;
+        }
+        #commentForm label {
+            display: none;
+        }
+        #commentForm input, #commentForm textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        #commentForm textarea {
+            margin-top: -15px;
+            margin-bottom: -5px;
+        }
+        #commentButton {
+            background-color: #8a0000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        .g-recaptcha {
+            float: right;
+        }
+        #commentButton:hover {
+            background-color: #ad3333;
+        }
+        .commentFlex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        .comment {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 20px;
+            background-color: #d5d5d5;
+            border-radius: 10px;
+            color: #1e1e1e;
+            position: relative;
+        }
+        .divide {
+            border-top: 1px solid #ccc;
+        }
+        .comment i {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: #555;
+        }
     </style>
 {% endblock %}
 {% block side %}
@@ -56,6 +149,52 @@
             galleryMaxRows: 2,
             paginationVisiblePages: 5,
             locationHash: false,
+        });
+    </script>
+{% endblock %}
+{% block bottom %}
+    <section id="updates">
+        <h1>Project Updates</h1>
+        <ul class="timeline">
+            {% for update in updates %}
+                <li>
+                    {{ update.updateDescription }}
+                    <br/>
+                    <i>{{ update.date|date:"M d, Y" }}</i>
+                </li>
+            {% empty %}
+            <p style="margin-top: 0px">There are currently no updates on this project! Stay tuned 👀</p>
+            <style>.timeline {border-left: none;}</style>
+            {% endfor %}
+        </ul>
+    </section>
+    <section id="comments">
+        <h1>Comments</h1>
+        <form method="post" id="commentForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" id="commentButton">Post Comment</button>
+        </form>
+        <br/>
+        <br/>
+        <br/>
+        <hr class="divide"/>
+        <div class="commentFlex">
+            {% for comment in comments %}
+            <div class="comment">
+                <p>{{ comment.content }}</p><br/>
+                <i>—{{ comment.name }} on {{ comment.created_at|date:"M d, Y" }}</i>
+            </div>
+            {% empty %}
+            <p style="margin-top: 0px">There are currently no comments on this project! Be the first to leave a comment!</p>
+            {% endfor %}
+        </div>
+    </section>
+    <script>
+        $('#commentForm #id_name').attr('placeholder', 'Your name...');
+        $('#commentForm #id_content').attr('placeholder', 'Your comment...');
+        $('#commentForm #id_content').on('keyup', function(){
+            $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
         });
     </script>
 {% endblock %}
