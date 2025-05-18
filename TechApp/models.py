@@ -1,9 +1,10 @@
+from tinymce.models import HTMLField
 from django.db import models
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to='images/')
-    title = models.CharField(max_length=250, blank=True, null=True, unique=True)
+    title = models.CharField(max_length=250, unique=True)
 
     def __str__(self):
         return self.title
@@ -17,19 +18,10 @@ class Image(models.Model):
         return self.image.url
 
 
-class Team(models.Model):
-    name = models.CharField(max_length=250, unique=True)
-    teamMember = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True)
-    judges = models.ManyToManyField('auth.User', related_name='judges')
-
-    def __str__(self):
-        return self.name
-
-
 class Topic(models.Model):
     title = models.CharField(max_length=250, unique=True)
     description = models.TextField()
-    coverImage = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, null=True)
+    coverImage = models.ForeignKey(Image, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -37,9 +29,10 @@ class Topic(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=250, unique=True)
-    description = models.TextField()
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
-    images = models.ManyToManyField(Image, blank=True)
+    blurb = models.TextField(max_length=750)
+    description = HTMLField()
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    images = models.ManyToManyField(Image)
     link = models.URLField(blank=True, null=True)
 
     def __str__(self):
@@ -53,14 +46,14 @@ class Project(models.Model):
 class ProjectUpdate(models.Model):
     updateDescription = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Update for {self.project.title} Project on {self.date.strftime('%m/%d/%Y')}"
 
 
 class Comment(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=32)
     content = models.TextField(max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)

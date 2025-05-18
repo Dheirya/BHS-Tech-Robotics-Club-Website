@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
     <title>Bernards High School Tech & Robotics Club</title>
-    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
     <style>
         .main-carousel {
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -24,7 +22,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            cursor: default;
+            cursor: ew-resize;
         }
         .titleCaption:hover {
             filter: brightness(0.85);
@@ -39,6 +37,7 @@
             color: white;
             padding: 10px;
             text-align: center;
+            text-decoration: underline;
         }
         #photos, #social {
             flex: 3;
@@ -46,15 +45,16 @@
             background-color: #ebe9e8;
             border-radius: 10px;
             color: #1e1e1e;
-            min-width: 200px;
         }
         #social {
-            flex: 1 !important;
+            flex: 1;
         }
         #gallery {
             margin-top: -20px !important;
         }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
 {% endblock %}
 {% block side %}
     <h1>Projects</h1>

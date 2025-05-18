@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'TechApp',
-    'django_recaptcha'
+    'django_recaptcha',
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -131,5 +132,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-RECAPTCHA_PUBLIC_KEY = '6Le4Nj4rAAAAAFkRMTJG8KpQKHCu5O-2uYPH6cog'
-RECAPTCHA_PRIVATE_KEY = '6Le4Nj4rAAAAAFkRMTJG8KpQKHCu5O-2uYPH6cog'
+RECAPTCHA_PUBLIC_KEY = '6LexIT8rAAAAAADE00cVP-QAHI1Vfdgup6kNni-P'
+RECAPTCHA_PRIVATE_KEY = # MY PRIVATE KEY
+
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver",
+    "menubar": True,
+    "plugins": "advlist,autolink,lists,link,image,charmap,print,preview,anchor,searchreplace,visualblocks,code,fullscreen,insertdatetime,media,table,paste,code,help,wordcount",
+    "toolbar": "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat | help",
+}

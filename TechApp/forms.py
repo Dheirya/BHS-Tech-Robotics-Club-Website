@@ -1,11 +1,12 @@
 from django import forms
 from .models import Comment
 from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV3
 
 
 class CommentForm(forms.ModelForm):
     honeypot = forms.CharField(required=False, widget=forms.HiddenInput)
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(widget=ReCaptchaV3, required=True)
 
     class Meta:
         model = Comment

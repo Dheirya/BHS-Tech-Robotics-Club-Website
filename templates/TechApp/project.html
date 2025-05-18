@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
     <title>{{ project.title }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
     <style>
         #gallery {
             margin-top: -20px !important;
@@ -34,7 +33,6 @@
             background-color: #ebe9e8;
             border-radius: 10px;
             color: #1e1e1e;
-            min-width: 200px;
             flex: 1 !important;
         }
         #comments {
@@ -57,6 +55,7 @@
             color: #555;
             display: block;
             text-align: right;
+            font-size: 0.8rem;
         }
         #commentForm label {
             display: none;
@@ -97,30 +96,32 @@
         }
         .comment {
             flex: 1;
-            min-width: 200px;
             padding: 10px 20px;
             background-color: #d5d5d5;
             border-radius: 10px;
             color: #1e1e1e;
-            position: relative;
+            min-width: 250px;
         }
         .divide {
             border-top: 1px solid #ccc;
+            margin-top: 15px;
         }
         .comment i {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
             color: #555;
+            font-size: 0.8rem;
+        }
+        .comment p {
+            margin-bottom: 7.5px !important;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
 {% endblock %}
 {% block side %}
     <h1>{{ project.title }}</h1>
-    <p class="description">{{ project.description }}</p>
+    <div class="description">{{ project.description|safe }}</div>
     {% if project.link %}
     <a class="link" href="{{ project.link }}" target="_blank"><b>Project Link</b></a>
-    {% endif %}
+    {% endif %}<br/><br/>
 {% endblock %}
 {% block content %}
     <h1>Photos</h1>
@@ -175,14 +176,11 @@
             {{ form.as_p }}
             <button type="submit" id="commentButton">Post Comment</button>
         </form>
-        <br/>
-        <br/>
-        <br/>
         <hr class="divide"/>
         <div class="commentFlex">
             {% for comment in comments %}
             <div class="comment">
-                <p>{{ comment.content }}</p><br/>
+                <p>{{ comment.content }}</p>
                 <i>—{{ comment.name }} on {{ comment.created_at|date:"M d, Y" }}</i>
             </div>
             {% empty %}
