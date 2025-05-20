@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-    <title>{{ topic.title }}</title>
+    <title>{{ tag.name }}</title>
     <style>
         .projectFlex {
             display: flex;
@@ -61,12 +61,11 @@
     </style>
 {% endblock %}
 {% block side %}
-    <h1>{{ topic.title }}</h1>
-    <img src="{{ topic.coverImage.image.url }}" alt="{{ topic.title }}" style="width: 100%; border-radius: 10px;">
-    <p>{{ topic.description }}</p>
+    <h1><span class="hashtag" style="margin-right: -5px">#{{ tag.name }}</span> Tag</h1>
+    <p>{{ tag.blurb }}</p>
 {% endblock %}
 {% block content %}
-    <h1>Projects</h1>
+    <h1>Projects in <span class="hashtag" style="margin-left: -5px">#{{ tag.name }}</span></h1>
     <div class="projectFlex">
         {% for project in projects %}
             <div class="project" onclick="window.location.href = '/project/{{ project.title }}'">
@@ -79,7 +78,7 @@
                 </div>
             </div>
         {% empty %}
-            <p style="margin-top: 0px">There are currently no projects under this topic! Stay tuned 👀</p>
+            <p style="margin-top: 0px">There are currently no projects under this tag! Stay tuned 👀</p>
         {% endfor %}
     </div>
     <script>

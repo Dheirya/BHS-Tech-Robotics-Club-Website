@@ -33,6 +33,9 @@
             #mainFlex, #bottomFlex {
                 margin: 0 2% !important;
             }
+            #search {
+                width: 50% !important;
+            }
         }
         @media (max-width: 815px) {
             nav ul a {
@@ -51,11 +54,14 @@
             #mainFlex {
                 flex-direction: column !important;
             }
+            #search {
+                width: 85% !important;
+            }
         }
         nav ul li {
             list-style-type: none;
             margin: 0;
-            padding: 10px;
+            padding: 7.5px;
             display: inline;
             font-size: 20px;
         }
@@ -110,9 +116,74 @@
         #photos h2 {
             margin-bottom: 0px;
         }
+        .hashtag {
+            background-color: #d5d5d5;
+            padding: 5px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        .hashtags {
+            margin-bottom: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .hashtags .hashtag:not(:first-child) {
+            margin-left: 5px;
+        }
+        #searchOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+        }
+        #search {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ebe9e8;
+            padding: 20px;
+            border-radius: 10px;
+            color: #1e1e1e;
+            box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+            width: 25%;
+        }
+        #search h1 {
+            margin: 0 0 10px;
+            text-align: center;
+        }
+        #search input {
+            width: calc(100% - 83px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        #search button {
+            background-color: #8a0000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+        }
+        #search button:hover {
+            background-color: #ad3333;
+        }
+        #searchOverlay.active {
+            display: block;
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
     {% block head %}{% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <nav>
@@ -122,8 +193,9 @@
                 <li><a href="/topic/{{ topic.title }}">{{ topic.title }}</a></li>
             {% endfor %}
             {% if user.is_superuser %}
-                <li><a href="/admin/">Admin</a></li>
+                <li><a href="/admin/" target="_blank">Admin</a></li>
             {% endif %}
+            <li><a href="#search" onclick="searchShow(event)"><i class="fa-solid fa-search"></i> Search</a></li>
         </ul>
     </nav>
     <br/>
@@ -153,6 +225,44 @@
             <p>The code is on <a href="https://github.com/Dheirya/BHS-Tech-Robotics-Club-Website" target="_blank">GitHub</a></p>
         </section>
     </div>
+    <div id="searchOverlay">
+        <div id="search">
+            <h1>Search!</h1>
+            <input onkeydown="checkSearchEnter(event)" type="text" id="searchInput" placeholder="Search for projects...">
+            <button id="searchButton" onclick="search()"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </div>
     <br/>
+    <script>
+        function searchHide() {
+            document.getElementById('searchOverlay').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+        }
+        function searchShow(event) {
+            event.stopPropagation();
+            document.getElementById('searchOverlay').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+        function checkSearchEnter(event) {
+            if (event.key === 'Enter' && document.getElementById('searchInput').value) {
+                search();
+            }
+        }
+        function search() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                window.location.href = '/search/' + encodeURIComponent(query);
+            } else {
+                alert('Please enter a search term.');
+            }
+        }
+        document.addEventListener('click', function (event) {
+            const overlay = document.getElementById('searchOverlay');
+            const searchBox = document.getElementById('search');
+            if (overlay.classList.contains('active') && !searchBox.contains(event.target)) {
+                searchHide();
+            }
+        });
+    </script>
 </body>
 </html>

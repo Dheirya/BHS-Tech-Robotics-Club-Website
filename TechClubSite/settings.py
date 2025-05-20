@@ -133,7 +133,7 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 RECAPTCHA_PUBLIC_KEY = '6LexIT8rAAAAAADE00cVP-QAHI1Vfdgup6kNni-P'
-RECAPTCHA_PRIVATE_KEY = # MY PRIVATE KEY
+RECAPTCHA_PRIVATE_KEY = # private key
 
 TINYMCE_DEFAULT_CONFIG = {
     "theme": "silver",

@@ -5,16 +5,23 @@
         #gallery {
             margin-top: -20px !important;
         }
-        .link {
+        .projectHashtag, .link, .likes, .share {
             text-decoration: none;
             color: #ebe9e8;
             background-color: #8a0000;
             padding: 10px;
             border-radius: 5px;
             transition: background-color 0.3s;
+            cursor: pointer;
         }
-        .link:hover {
+        .projectHashtag {
+            background-color: #555;
+        }
+        .link:hover, .likes:hover, .share:hover {
             background-color: #ad3333;
+        }
+        .projectHashtag:hover {
+            background-color: #777;
         }
         .description {
             margin-bottom: 30px;
@@ -113,15 +120,24 @@
         .comment p {
             margin-bottom: 7.5px !important;
         }
+        .helptext {
+            display: none !important;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/css/nanogallery2.min.css">
 {% endblock %}
 {% block side %}
     <h1>{{ project.title }}</h1>
     <div class="description">{{ project.description|safe }}</div>
+    {% for tag in project.tags.all %}
+        <a class="projectHashtag" href="/tag/{{ tag.name }}">#{{ tag.name }}</a>
+    {% endfor %}
     {% if project.link %}
-    <a class="link" href="{{ project.link }}" target="_blank"><b>Project Link</b></a>
-    {% endif %}<br/><br/>
+    <a class="link" href="{{ project.link }}" target="_blank"><i class="fa-solid fa-link"></i> Project Link</a>
+    {% endif %}
+    <a class="share" onclick="navigator.share({title: '{{ project.title }}', text: '{{ project.blurb }}', url: window.location.href});"><i class="fa-solid fa-arrow-up-from-bracket"></i> Share</a>
+    <a class="likes"><i class="fa-solid fa-heart"></i> {{ project.likes }}</a>
+    <br/><br/>
 {% endblock %}
 {% block content %}
     <h1>Photos</h1>
@@ -193,6 +209,24 @@
         $('#commentForm #id_content').attr('placeholder', 'Your comment...');
         $('#commentForm #id_content').on('keyup', function(){
             $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
+        });
+        let liked = localStorage.getItem('liked_{{ project.id }}');
+        $('.likes').on('click', function() {
+            if (liked) {
+                alert('You have already liked this project!');
+                return;
+            }
+            let likes = parseInt($('.likes').text().match(/\d+/)[0]);
+            likes++;
+            localStorage.setItem('liked_{{ project.id }}', true);
+            liked = true;
+            $.ajax({
+                url: '/like/',
+                type: 'POST',
+                data: {project_id: '{{ project.id }}', csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function(response) {$('.likes').html('<i class="fa-solid fa-heart"></i> ' + likes);},
+                error: function(xhr, status, error) {console.error('Error updating likes:', error);}
+            });
         });
     </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-    <title>{{ topic.title }}</title>
+    <title>{{ tag.name }}</title>
     <style>
         .projectFlex {
             display: flex;
@@ -58,15 +58,18 @@
         #social {
             flex: 1 !important;
         }
+        #side {
+            display: none !important;
+        }
+        .searchQuery {
+            color: #8a0000;
+            font-weight: bold;
+            font-style: italic;
+        }
     </style>
 {% endblock %}
-{% block side %}
-    <h1>{{ topic.title }}</h1>
-    <img src="{{ topic.coverImage.image.url }}" alt="{{ topic.title }}" style="width: 100%; border-radius: 10px;">
-    <p>{{ topic.description }}</p>
-{% endblock %}
 {% block content %}
-    <h1>Projects</h1>
+    <h1>Searching for projects related to <span class="searchQuery" style="margin-left: -5px">{{ query }}</span></h1>
     <div class="projectFlex">
         {% for project in projects %}
             <div class="project" onclick="window.location.href = '/project/{{ project.title }}'">
@@ -79,7 +82,7 @@
                 </div>
             </div>
         {% empty %}
-            <p style="margin-top: 0px">There are currently no projects under this topic! Stay tuned 👀</p>
+            <p style="margin-top: 0px">There are no projects under this search query!</p>
         {% endfor %}
     </div>
     <script>
