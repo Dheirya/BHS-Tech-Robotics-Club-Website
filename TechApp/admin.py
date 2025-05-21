@@ -1,9 +1,32 @@
 from django.contrib import admin
-from .models import Image, Topic, Project, ProjectUpdate, Comment
+from .models import Image, Topic, Project, ProjectUpdate, Comment, Tag
 
 
-admin.site.register(Image)
-admin.site.register(Topic)
-admin.site.register(Project)
-admin.site.register(ProjectUpdate)
-admin.site.register(Comment)
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ("title", "image")
+
+
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ("title", "description", "coverImage")
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("title", "topic", "blurb", "link")
+
+
+@admin.register(ProjectUpdate)
+class ProjectUpdateAdmin(admin.ModelAdmin):
+    list_display = ("project", "updateDescription", "date")
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("project", "name", "content", "created_at", "ip_address")
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "blurb")
