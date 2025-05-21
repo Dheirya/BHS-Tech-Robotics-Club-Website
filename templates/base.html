@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>
     <style>
         body {
             background-color: #3d0000;
@@ -19,7 +21,7 @@
             margin: 10px 0 0;
         }
         @media (min-width: 1750px) {
-            #mainFlex, #bottomFlex {
+            #mainFlex, #bottomFlex, #bottomBottomFlex {
                 margin: 0 10% !important;
             }
         }
@@ -27,10 +29,10 @@
             nav h1 {
                 font-size: 25px;
             }
-            #bottomFlex {
+            #bottomFlex, #bottomBottomFlex {
                 flex-direction: column !important;
             }
-            #mainFlex, #bottomFlex {
+            #mainFlex, #bottomFlex, #bottomBottomFlex {
                 margin: 0 2% !important;
             }
             #search {
@@ -44,7 +46,6 @@
             }
             nav ul li {
                 padding: 2.5px !important;
-                display: inline-block !important;
                 margin-bottom: 20px !important;
             }
             nav ul {
@@ -60,9 +61,9 @@
         }
         nav ul li {
             list-style-type: none;
-            margin: 0;
+            margin: 10px 0;
             padding: 7.5px;
-            display: inline;
+            display: inline-block;
             font-size: 20px;
         }
         nav ul a {
@@ -77,7 +78,8 @@
             background-color: #ad3333;
         }
         nav ul {
-            margin-top: 10px;
+            margin-top: -7.5px;
+            margin-bottom: -5px;
             text-align: center;
             padding: 0;
         }
@@ -100,7 +102,7 @@
             color: #1e1e1e;
             box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
         }
-        #bottomFlex {
+        #bottomFlex, #bottomBottomFlex {
             display: flex;
             justify-content: space-between;
             margin: 0 5%;
@@ -180,10 +182,38 @@
         #searchOverlay.active {
             display: block;
         }
+        #contact, #about {
+            flex: 2;
+            padding: 10px 20px;
+            background-color: #ebe9e8;
+            border-radius: 10px;
+            color: #1e1e1e;
+        }
+        #contactForm input, #contactForm textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        #contactForm textarea {
+            margin-top: -15px;
+            margin-bottom: -5px;
+        }
+        #contactForm button {
+            background-color: #8a0000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
     </style>
     {% block head %}{% endblock %}
     <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <nav>
@@ -211,6 +241,54 @@
     <div id="bottomFlex" class="container">
         {% block bottom %}{% endblock %}
         <section id="social">
+            <h2>Resources</h2>
+            <p>Free general resources for students:</p>
+            <ul>
+                <li><a href="https://education.github.com/pack">GitHub Education Pack</a></li>
+                <li><a href="https://toolbox.hackclub.com">Hackclub Resources</a></li>
+            </ul>
+            <p>Need project ideas? Check out these sites:</p>
+            <ul>
+                <li><a href="https://github.com/explore">GitHub Explore</a></li>
+                <li><a href="https://www.hackster.io/">Hackster</a></li>
+                <li><a href="https://www.instructables.com/circuits/robots/projects/">Instructables</a></li>
+                <li><a href="https://hackaday.io/discover">Hackaday.io</a></li>
+            </ul>
+            <p>Good engineering tools:</p>
+            <ul>
+                <li><a href="https://onshape.com">OnShape</a></li>
+                <li><a href="https://tinkercad.com">TinkerCad</a></li>
+                <li><a href="https://figma.com">Figma</a></li>
+
+            </ul>
+            <p>Here are some great CS resources:</p>
+            <ul>
+                <li><a href="https://w3schools.com/">W3Schools</a></li>
+                <li><a href="https://www.freecodecamp.org/">FreeCodeCamp</a></li>
+                <li><a href="https://workshops.hackclub.com">Hack Club Workshops</a></li>
+                <li><a href="https://cs50.harvard.edu/x/2025/">Harvard's CS50x</a></li>
+                <li><a href="https://developer.mozilla.org/en-US/">MDN Web Docs</a></li>
+                <li><a href="https://usaco.org">USACO</a></li>
+                <li><a href="https://tutorial.djangogirls.org/en/">Django Girls</a></li>
+            </ul>
+        </section>
+    </div>
+    <br/>
+    <div id="bottomBottomFlex">
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>Have a question? Want to join? Want to collaborate? Send us a message!</p>
+            <form id="contactForm" onsubmit="return false">
+                <p>
+                    <input id="contactName" maxlength="100" type="text" placeholder="Your name" required>
+                </p>
+                <p>
+                    <textarea onkeydown="checkContactEnter()" placeholder="Your message..." id="contactText" cols="40" rows="10" required></textarea>
+                </p>
+                <button id="contact" onclick="submitContact()">Submit</button>
+            </form>
+        </section>
+        <section id="about">
             <h2>About Us</h2>
             <p>We are a team of motivated high school students attempting to spread STEM education and create a more inclusive tech community!</p>
             <ul>
@@ -221,7 +299,7 @@
             </ul>
             <p>Follow us on <a href="https://instagram.com/bhstechroboticsclub/" target="_blank">Instagram</a> for our latest!</p>
             <h2>Designed By</h2>
-            <p>This site was made by <b>Dheirya Tyagi</b> (2026) and <b>Lucian Spiteri</b> (2026). It is being graciously hosted and funded by Hack Club!</p>
+            <p>This site was made by <b>Dheirya Tyagi</b> (2026). It is being graciously hosted by Hack Club!</p>
             <p>The code is on <a href="https://github.com/Dheirya/BHS-Tech-Robotics-Club-Website" target="_blank">GitHub</a></p>
         </section>
     </div>
@@ -263,6 +341,26 @@
                 searchHide();
             }
         });
+        function checkContactEnter() {
+            const name = document.getElementById('contactName').value;
+            const message = document.getElementById('contactText').value;
+            if (event.key === 'Enter' && name && message) {
+                submitContact();
+            }
+        }
+        function submitContact() {
+            const name = document.getElementById('contactName').value;
+            const message = document.getElementById('contactText').value;
+            if (name && message) {
+                const subject = 'Contact from ' + name;
+                const body = 'Name: ' + name + '\n\nMessage:\n' + message;
+                const mailtoLink = 'mailto:bhstechroboticsclub@gmail.com/?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+                window.open(mailtoLink, '_blank');
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
     </script>
+    <script async defer src="https://kit.fontawesome.com/89228834fb.js" crossorigin="anonymous"></script>
 </body>
 </html>
