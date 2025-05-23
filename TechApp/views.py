@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Topic, Project, Tag
-from ipware import get_client_ip
 from .forms import CommentForm
 
 
@@ -42,13 +41,11 @@ def project(request, title):
     project_updates = project.projectupdate_set.all().order_by('-date')
     form = CommentForm(request.POST or None)
     comments = project.comment_set.all().order_by('-created_at')
-    ip = str(get_client_ip(request)[0])
     if form.is_valid():
         comment = form.save(commit=False)
         comment.project = project
-        comment.ip_address = ip
-        if project.comment_set.filter(ip_address=ip).count() >= 3:
-            form.add_error(None, "You have already commented 3 times on this project! Comment on another project.")
+        if project.comment_set.count() >= 15:
+            form.add_error(None, "Sorry! This project already has a maximum of 15 comments.")
             return render(request, 'TechApp/project.html', {'project': project, 'images': images, 'updates': project_updates, 'form': form, 'comments': comments})
         comment.save()
         return redirect('project', title=title)
