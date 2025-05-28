@@ -32,6 +32,9 @@
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000
 #define MAX_STARS 150
+#define EEPROM_MONEY_ADDR 0
+#define EEPROM_HEALTH_ADDR 8
+#define EEPROM_HAPPY_ADDR 16
 
 int numStars = 0;
 int starX[MAX_STARS];
@@ -48,9 +51,6 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 int state = 1;
 int homeState = 1;
-int happiness = 60;
-int health = 80;
-int money = 200;
 bool blink = false;
 unsigned long previousMillis = 0;
 unsigned long blinkStartTime = 0;
@@ -59,6 +59,15 @@ const long blinkDuration = 200;
 const long minBlinkInterval = 1000;
 const long maxBlinkInterval = 5000;
 unsigned long lastButtonPressTime = 0;
+unsigned long previousTimeUpdate = 0;
+unsigned long lastChangedHealth = 0;
+unsigned long lastChangedHappy = 0;
+const unsigned long second = 1000;
+int timerSeconds = 0;
+int timerMinutes = 0;
+int lastStudyMinutes = 0;
+int lastFocusMinutes = 0;
+
 const long buttonCooldown = 500;
 uint32_t seed = 12345;
 
