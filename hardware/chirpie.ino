@@ -3,6 +3,7 @@
 #include "TouchScreen.h"
 #include "graphics.h"
 #include "constants.h"
+#include <EEPROM.h>
 
 void drawColorBitmap(int16_t x, int16_t y, const uint16_t *bitmap, int16_t w, int16_t h, float scale = 1.0) {
   for (int16_t origY = 0; origY < h; origY++) {
@@ -39,14 +40,16 @@ void updateMoney() {
   tft.setCursor(27, 7);
   tft.setTextSize(2);
   drawColorBitmap(6, 5, coin, 20, 20, 0.9);
-  tft.println(String(money));
+  tft.fillRect(27, 7, 60, 14, THEME);
+  tft.println(String(loadMoneyFromEEPROM()));
 }
 
 void drawPercent() {
+  tft.fillRect(12, 37, 86, 120, BACKGROUND);
   tft.drawRoundRect(12, 37, 30, 120, 5, THEME);
   tft.drawRoundRect(56, 37, 30, 120, 5, THEME);
-  tft.fillRoundRect(12, 37, 30, happiness * 1.2, 5, DARKTHEME);
-  tft.fillRoundRect(56, 37, 30, health * 1.2, 5, DARKTHEME);
+  tft.fillRoundRect(12, 37, 30, loadHappyFromEEPROM() * 1.2, 5, DARKTHEME);
+  tft.fillRoundRect(56, 37, 30, loadHealthFromEEPROM() * 1.2, 5, DARKTHEME);
 }
 
 void drawTopBar() {
@@ -203,6 +206,75 @@ bool canPressButton() {
   return false;
 }
 
+void updateTime(uint16_t color) {
+  tft.setTextSize(4);
+  tft.setCursor(102, 200);
+  String minutesStr = String(timerMinutes);
+  String secondsStr = timerSeconds < 10 ? "0" + String(timerSeconds) : String(timerSeconds);
+  if (minutesStr.length() == 1) {
+    minutesStr = "0" + minutesStr;
+  }
+  if (secondsStr.length() == 1) {
+    secondsStr = "0" + secondsStr;
+  }
+  tft.fillRect(102, 200, 120, 28, color);
+  tft.print(minutesStr + ":" + secondsStr);
+}
+
+void menuTimer(unsigned long currentMillis, uint16_t color) {
+  if (currentMillis - previousTimeUpdate >= second) {
+    previousTimeUpdate = currentMillis;
+    timerSeconds++;
+    if (timerSeconds >= 60) {
+      timerSeconds = 0;
+      timerMinutes++;
+    }
+    updateTime(color);
+  }
+}
+
+void saveMoneyToEEPROM(int money) {
+  EEPROM.put(EEPROM_MONEY_ADDR, money);
+}
+
+void saveHealthToEEPROM(int health) {
+  EEPROM.put(EEPROM_HEALTH_ADDR, health);
+}
+
+void saveHappyToEEPROM(int happy) {
+  EEPROM.put(EEPROM_HAPPY_ADDR, happy);
+}
+
+int loadMoneyFromEEPROM() {
+  int money;
+  EEPROM.get(EEPROM_MONEY_ADDR, money);
+  if (money <= 0 || money > 99999) {
+    money = 0;
+    saveMoneyToEEPROM(money);
+  }
+  return money;
+}
+
+int loadHealthFromEEPROM() {
+  int health;
+  EEPROM.get(EEPROM_HEALTH_ADDR, health);
+  if (health <= 0 || health > 100) {
+    health = 100;
+    saveHealthToEEPROM(health);
+  }
+  return health;
+}
+
+int loadHappyFromEEPROM() {
+  int happy;
+  EEPROM.get(EEPROM_HAPPY_ADDR, happy);
+  if (happy <= 0 || happy > 100) {
+    happy = 100;
+    saveHappyToEEPROM(happy);
+  }
+  return happy;
+}
+
 void setup() {
   Serial.begin(9600);
   uint16_t ID = tft.readID();
@@ -216,10 +288,31 @@ void setup() {
 
 void loop() {
   digitalWrite(13, HIGH);
+  unsigned long currentMillis = millis();
   TSPoint p = ts.getPoint();
   digitalWrite(13, LOW);
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
+  if (currentMillis - lastChangedHealth >= 10 * second) {
+    lastChangedHealth = currentMillis;
+    int health_value = loadHealthFromEEPROM();
+    if (health_value > 1) {
+      saveHealthToEEPROM(loadHealthFromEEPROM() - 1);
+      if (state == 1) {
+        drawPercent();
+      }
+    }
+  }
+  if (currentMillis - lastChangedHappy >= 5 * second) {
+    lastChangedHappy = currentMillis;
+    int happy_value = loadHappyFromEEPROM();
+    if (happy_value > 1) {
+      saveHappyToEEPROM(loadHappyFromEEPROM() - 1);
+      if (state == 1) {
+        drawPercent();
+      }
+    }
+  }
   if (state == 1) {
     blinkFunc();
   }
@@ -228,6 +321,18 @@ void loop() {
     p.y = tft.width() - map(p.y, TS_MINY, TS_MAXY, 0, tft.width());
     Serial.println(String(p.x) + ", " + String(p.y));
     if (state == 1) {
+      if (p.y > 6 && p.y < 78 && p.x > 194 && p.x < 236) {
+        saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+        updateMoney();
+        saveHealthToEEPROM(loadHealthFromEEPROM() + 10);
+        drawPercent();
+      }
+      if (p.y > 85 && p.y < 157 && p.x > 194 && p.x < 236) {
+        saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+        updateMoney();
+        saveHappyToEEPROM(loadHappyFromEEPROM() + 10);
+        drawPercent();
+      }
       if (p.y > 289 && p.x < 31) {
         if (canPressButton()) {
           setStore();
@@ -255,6 +360,32 @@ void loop() {
         }
       }
     }
+    if (state == 2) {
+      if (p.y > 6 && p.y < 158 && p.x > 34 && p.x < 133) {
+        if (canPressButton()) {
+          saveMoneyToEEPROM(loadMoneyFromEEPROM() + 20);
+          updateMoney();
+        }
+      }
+      if (p.y > 161 && p.y < 313 && p.x > 34 && p.x < 133) {
+        if (canPressButton()) {
+          saveMoneyToEEPROM(loadMoneyFromEEPROM() + 15);
+          updateMoney();
+        }
+      }
+      if (p.y > 6 && p.y < 158 && p.x > 136 && p.x < 235) {
+        if (canPressButton()) {
+          saveMoneyToEEPROM(loadMoneyFromEEPROM() + 25);
+          updateMoney();
+        }
+      }
+      if (p.y > 161 && p.y < 313 && p.x > 136 && p.x < 235) {
+        if (canPressButton()) {
+          saveMoneyToEEPROM(loadMoneyFromEEPROM() + 30);
+          updateMoney();
+        }
+      }
+    }
     if (state == 2 || state == 3 || state == 4) {
       if (p.y > 289 && p.x < 31) {
         if (canPressButton()) {
@@ -262,11 +393,27 @@ void loop() {
           drawTopBar();
           setHome();
           state = 1;
+          timerSeconds = 0;
+          timerMinutes = 0;
+          lastStudyMinutes = 0;
+          lastFocusMinutes = 0;
         }
       }
     }
   }
+  if (state == 3) {
+    menuTimer(currentMillis, GREEN);
+    if (timerMinutes > lastStudyMinutes) {
+      lastStudyMinutes = timerMinutes;
+      saveMoneyToEEPROM(loadMoneyFromEEPROM() + 1);
+    }
+  }
   if (state == 4) {
     updateTwinklingStars();
+    menuTimer(currentMillis, BLACK);
+    if (timerMinutes >= lastFocusMinutes + 2) {
+      lastFocusMinutes = timerMinutes;
+      saveMoneyToEEPROM(loadMoneyFromEEPROM() + 1);
+    }
   }
 }
