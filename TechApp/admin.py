@@ -4,7 +4,7 @@ from .models import Image, Topic, Project, ProjectUpdate, Comment, Tag
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ("title", "image")
+    list_display = ("title", "image", "hidden")
 
 
 @admin.register(Topic)
@@ -14,7 +14,7 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("title", "topic", "blurb", "link")
+    list_display = ("title", "blurb", "link")
 
 
 @admin.register(ProjectUpdate)

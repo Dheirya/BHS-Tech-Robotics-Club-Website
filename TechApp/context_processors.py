@@ -6,4 +6,4 @@ def all_topics(request):
 
 
 def all_images(request):
-    return {'all_images': Image.objects.all().order_by('?')}
+    return {'all_images': Image.objects.filter(hidden=False).order_by('?')}

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block head %}
-    <title>{{ project.title }}</title>
+    <title>{{ project.title }} - BHS Tech & Robotics Club</title>
+    <meta name="description" content="{{ project.blurb }}">
+    <meta name="keywords" content="{{ project.title }}, {{ project.tags.all|join:", " }}">
     <style>
         #gallery {
             margin-top: -20px !important;
@@ -152,12 +154,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nanogallery2@3.0.5/dist/jquery.nanogallery2.min.js"></script>
     <script>
+        let list = [{% for image in project.images.all %}{src: '{{ image.image.url }}'},{% endfor %}];
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+        }
         $('#gallery').nanogallery2({
-            items: [
-                {% for image in project.images.all %}
-                    {src: '{{ image.image.url }}', title: '{{ image.title }}'},
-                {% endfor %}
-            ],
+            items: list,
             galleryDisplayMode: 'pagination',
             thumbnailHeight: '275',
             thumbnailWidth: 'auto',

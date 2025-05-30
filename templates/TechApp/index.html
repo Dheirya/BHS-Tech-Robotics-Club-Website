@@ -58,7 +58,7 @@
 {% endblock %}
 {% block side %}
     <h1>Projects</h1>
-    <div class="main-carousel" data-flickity='{"cellAlign": "left", "contain": true}'>
+    <div class="main-carousel" data-flickity='{"cellAlign": "left", "contain": true, "autoPlay": true, "lazyLoad": true, "pageDots": false, "selectedAttraction": 0.01, "friction": 0.15, "wrapAround": true}'>
         {% for project in projects %}
             <div class="carousel-cell">
                 <img src="{{ project.random_image.image.url }}" alt="{{ project.title }}">
@@ -90,6 +90,7 @@
                 {% endfor %}
             ],
             galleryDisplayMode: 'pagination',
+            galleryPaginationMode: 'numbers',
             thumbnailHeight: '275',
             thumbnailWidth: 'auto',
             thumbnailAlignment: 'fillWidth',

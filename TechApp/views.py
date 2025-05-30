@@ -25,13 +25,13 @@ def search(request, query):
 
 def topic(request, title):
     topic = Topic.objects.get(title=title)
-    projects = Project.objects.filter(topic=topic)
+    projects = Project.objects.filter(topic=topic).order_by('?')
     return render(request, 'TechApp/topic.html', {'topic': topic, 'projects': projects})
 
 
 def tag(request, name):
     tag = Tag.objects.get(name=name)
-    projects = Project.objects.filter(tags=tag)
+    projects = Project.objects.filter(tags=tag).order_by('?')
     return render(request, 'TechApp/tag.html', {'tag': tag, 'projects': projects})
 
 

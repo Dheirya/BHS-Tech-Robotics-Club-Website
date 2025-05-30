@@ -1,10 +1,12 @@
 from tinymce.models import HTMLField
 from django.db import models
+from django.urls import reverse
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to='images/', help_text="Upload an image")
     title = models.CharField(max_length=250, unique=True, help_text="Title of the image")
+    hidden = models.BooleanField(default=False, help_text="Hide this image from front page")
 
     def __str__(self):
         return self.title
@@ -26,12 +28,15 @@ class Topic(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('topic', kwargs={'title': self.title})
+
 
 class Project(models.Model):
     title = models.CharField(max_length=250, unique=True, help_text="Title of the project")
     blurb = models.TextField(max_length=750, help_text="Short description of the project")
     description = HTMLField(help_text="Detailed description of the project")
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, help_text="Topic related to the project")
+    topic = models.ManyToManyField(Topic, help_text="Topic(s) related to the project")
     images = models.ManyToManyField(Image, help_text="Images related to the project")
     link = models.URLField(blank=True, null=True, help_text="External link to the project")
     likes = models.IntegerField(default=0, help_text="Number of likes for this project")
@@ -42,7 +47,10 @@ class Project(models.Model):
 
     @property
     def random_image(self):
-        return self.images.order_by('?').first()
+        return self.images.filter(hidden=False).order_by('?').first()
+
+    def get_absolute_url(self):
+        return reverse('project', kwargs={'title': self.title})
 
 
 class ProjectUpdate(models.Model):
@@ -71,4 +79,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('tag', kwargs={'name': self.name})
 
