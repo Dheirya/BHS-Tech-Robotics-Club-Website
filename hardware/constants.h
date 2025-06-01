@@ -16,6 +16,7 @@
 #define TS_MAXX 900
 #define TS_MINY 70
 #define TS_MAXY 920
+#define RED 0x8800
 #define BLACK 0x0000
 #define LIGHTBLACK 0x4a69
 #define WHITE 0xFFFF
