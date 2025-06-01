@@ -275,6 +275,16 @@ int loadHappyFromEEPROM() {
   return happy;
 }
 
+void shortError() {
+  tft.fillRect(0, 0, 320, 30, RED);
+  tft.setTextSize(3);
+  tft.setCursor(120, 3);
+  tft.println(F("ERROR"));
+  delay(2000);
+  drawTopBar();
+  drawButtons();
+}
+
 void setup() {
   Serial.begin(9600);
   uint16_t ID = tft.readID();
@@ -284,6 +294,8 @@ void setup() {
   tft.setTextColor(WHITE);
   drawTopBar();
   setHome();
+  saveHealthToEEPROM(37);
+  saveHappyToEEPROM(94);
 }
 
 void loop() {
@@ -293,7 +305,7 @@ void loop() {
   digitalWrite(13, LOW);
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
-  if (currentMillis - lastChangedHealth >= 10 * second) {
+  if (currentMillis - lastChangedHealth >= 15 * 60 * second) {
     lastChangedHealth = currentMillis;
     int health_value = loadHealthFromEEPROM();
     if (health_value > 1) {
@@ -303,7 +315,7 @@ void loop() {
       }
     }
   }
-  if (currentMillis - lastChangedHappy >= 5 * second) {
+  if (currentMillis - lastChangedHappy >= 15 * 60 * second) {
     lastChangedHappy = currentMillis;
     int happy_value = loadHappyFromEEPROM();
     if (happy_value > 1) {
@@ -322,16 +334,46 @@ void loop() {
     Serial.println(String(p.x) + ", " + String(p.y));
     if (state == 1) {
       if (p.y > 6 && p.y < 78 && p.x > 194 && p.x < 236) {
-        saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
-        updateMoney();
-        saveHealthToEEPROM(loadHealthFromEEPROM() + 10);
-        drawPercent();
+        if ((loadHealthFromEEPROM() + 10 <= 100) && (loadMoneyFromEEPROM() - 50 >= 0)) {
+          if (canPressButton()) {
+            saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+            updateMoney();
+            saveHealthToEEPROM(loadHealthFromEEPROM() + 10);
+            drawPercent();
+          }
+        } else if ((loadHealthFromEEPROM() + 10 < 110 && loadHealthFromEEPROM() + 10 > 100) && (loadMoneyFromEEPROM() - 50 >= 0)) {
+          if (canPressButton()) {
+            saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+            updateMoney();
+            saveHealthToEEPROM(100);
+            drawPercent();
+          }
+        } else {
+          if (canPressButton()) {
+            shortError();
+          }
+        }
       }
       if (p.y > 85 && p.y < 157 && p.x > 194 && p.x < 236) {
-        saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
-        updateMoney();
-        saveHappyToEEPROM(loadHappyFromEEPROM() + 10);
-        drawPercent();
+        if ((loadHappyFromEEPROM() + 10 <= 100) && (loadMoneyFromEEPROM() - 50 >= 0)) {
+          if (canPressButton()) {
+            saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+            updateMoney();
+            saveHappyToEEPROM(loadHappyFromEEPROM() + 10);
+            drawPercent();
+          }
+        } else if ((loadHappyFromEEPROM() + 10 < 110 && loadHappyFromEEPROM() + 10 > 100)  && (loadMoneyFromEEPROM() - 50 >= 0)) {
+          if (canPressButton()) {
+            saveMoneyToEEPROM(loadMoneyFromEEPROM() - 50);
+            updateMoney();
+            saveHappyToEEPROM(100);
+            drawPercent();
+          }
+        } else {
+          if (canPressButton()) {
+            shortError();
+          }
+        }
       }
       if (p.y > 289 && p.x < 31) {
         if (canPressButton()) {
